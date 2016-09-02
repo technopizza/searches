@@ -15,97 +15,150 @@ import java.util.Scanner;
  */
 public class Main {
 
-     public static void main(String[] args) {
-         Scanner input = new Scanner(System.in);
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
         Random randNum = new Random();
-         final int arrLength = 1000;
-         boolean looping = true;
-         int inputNum;
-         String answer;
-         int[] array = new int[arrLength];
-         boolean found;
-         int foundNum = 2000000000;
-         
-         for (int i = 0; i < array.length; i++) {
+        final int arrLength = 1000;
+        boolean looping = true;
+        int inputNum;
+        String answer;
+        int[] array = new int[arrLength];
+        boolean found;
+        int foundNum = 2000000000;
+
+        for (int i = 0; i < array.length; i++) {
             array[i] = randNum.nextInt(1000) + 1;
-         }
-         
-         Arrays.sort(array);
-                 
-         do{
-             System.out.print("Please enter the number you wish to look for: ");
-             System.out.println("");
-            
-             found = false;
-             inputNum = input.nextInt();
-                    
+        }
+
+        Arrays.sort(array);
+
+        do {
+            System.out.print("Please enter the number you wish to look for: ");
+            System.out.println("");
+
+            found = false;
+            inputNum = input.nextInt();
+
             System.out.println("Linear Search algorithm:");
-             System.out.println("");
-           
-             /////////////////////////////////////
-             
-             for (int i = 0; i < array.length; i++) {
-                 System.out.println( array[i]);
-                 if(array[i] == inputNum){
-                     foundNum = i;
-                     found = true;
-                 }
-             }
-            ///////////////////////////////
-             if (found) {
-                System.out.println("The number " + inputNum 
-                                     + " can be found at " + foundNum);
-             } else {
-                System.out.println("Sorry, " + " could not be found.");
-             }
-             
-             System.out.println("Binary Search algorithm:");
-             System.out.println("");
-             
-             found = false;
-            //////////////////////////////////////////////////
-            int startOfSelection = 0; 
-            int endOfSelection = array.length;
-             for (int i = ((endOfSelection - 1) / 2); i < endOfSelection; i++) {
-                 System.out.println("checking index " + i );
-                 if(array[i] == inputNum){
-                     System.out.println("I found your input number " + inputNum + ", at index" + i);
-                     foundNum = i;
-                     found = true;
-                 }
-                 else if(array[i] < inputNum){
-                     System.out.println("your number, " + inputNum + " , "
-                             + "is greater than " + array[i]
-                             + ", the number at index " + i);
-                     System.out.println("now searching at index " + (i + ((int) (i / 2))) + " through " + endOfSelection);
-                     i = i + ((int) (i / 2));
-                 }
-                 else if(array[i] > inputNum){
-                     System.out.println("your number, " + inputNum + " , "
-                             + "is less than " + array[i]
-                             + ", the number at index " + i);
-                     System.out.println("now searching at index " + ((int) (i / 2)) + " through " + endOfSelection);
-                     endOfSelection =  + ((int) (endOfSelection / 2));
-                 }
-             }
-            ////////////////////////////////////////////////////////////////
-             if (found) {
-                 System.out.println("The number " + inputNum 
-                                     + " can be found at " + foundNum);
-             } else {
-                System.out.println("Sorry, " + " could not be found.");
-             }
-             
-             System.out.println("Would you like to continue?");
-             Scanner replay = new Scanner(System.in);
-             answer = replay.next();
-             System.out.println("");
-            
-             if(answer.equals("no")) {
-                 looping = false;
+            System.out.println("");
+
+            /*********************************************************************************************
+            * Search Algorithm: Linear                                                                   *
+            *                                                                                            *
+            * Description: Iterates through an array in order, checking each index for a specified value *
+            *                                                                                            *
+            * Parameters: Array array, int inputNumber                                                   *
+            *                                                                                            *
+            * Pre-Conditions: none                                                                       *
+            *                                                                                            *
+            * Post-Conditions: if inputNum is located, found is set to true                              *
+            *                  and foundNum is set equal to inputNum's index                             *
+            *                                                                                            *
+            **********************************************************************************************/
+            /* Linear Search Algorithm */
+            for (int i = 0; i < array.length; i++) { //iterates through entire array in order
+                System.out.println("array[" + i + "] = " + array[i]); //prints the current index and its value
+                /* check to see if desired number has been located */
+                if (array[i] == inputNum) {
+                    foundNum = i; //set foundNum to the index at which desired number was found
+                    found = true;
+                    break; //end the search
+                }
+                
+                /* This code for use only with a sorted array.
+                   Ends the search once the input value has been exceded by values in the array. */
+                else if(array[i] > inputNum){
+                    break; //end the search
+                }
             }
-        }while(looping);
-     }
-     
-    
+            
+            
+            
+            
+            
+            if (found) {
+                System.out.println("The number " + inputNum
+                        + " can be found at " + foundNum);
+            } else {
+                System.out.println("Sorry, " + " could not be found.");
+            }
+
+            System.out.println("Binary Search algorithm:");
+            System.out.println("");
+
+            found = false;
+            
+            /*********************************************************************************************
+            * Search Algorithm: Binary / Tree                                                            *
+            *                                                                                            *
+            * Description: Iterates through an array by continuously halving the selection based on      *
+            *              the range of values it contains, until a single index is reached              *
+            * Parameters: Array array, int inputNumber                                                   *
+            *                                                                                            *
+            * Pre-Conditions: none                                                                       *
+            *                                                                                            *
+            * Post-Conditions: if inputNum is located, found is set to true                              *
+            *                  and foundNum is set equal to inputNum's index                             *
+            *                                                                                            *
+            **********************************************************************************************/
+            /* Binary Search Algorithm */
+            int upperBound = array.length; //sets the upper bound for each iteration
+            int lowerBound = 0; //sets the lower bound for each iteration
+            
+            /* stores the "middle" between the upper and lower bounds.
+               always decides the new bounds for the next iteration */
+            int currentIndex;
+            
+            while (!found) { //loop that keeps iterating until the number is found a single incorrect index is reached 
+                currentIndex = (int) ((upperBound + lowerBound) / 2); //gets the "middle" of the bounds by averaging and rounding
+                
+                /* This allows exit from the loop when the binary search is complete */
+                if (currentIndex == upperBound || currentIndex == lowerBound) { //checks to see if the bounds are closest
+                    break;
+                } else {
+                    System.out.println("Looking between indeces " + lowerBound + " and " + upperBound);
+
+                    System.out.println("The value at array[" + currentIndex + "] is " + array[currentIndex]);
+                    /* check to see if desired number has been located */
+                    if (array[currentIndex] == inputNum) {
+                        foundNum = currentIndex; //set foundNum to the index at which desired number was found
+                        found = true;
+                    } 
+                    /* gets the "upper half" of the current selection of the array by bringing the lower bound
+                       up to where the "halway point" was before */
+                    else if (array[currentIndex] < inputNum) {
+                        System.out.println("Your number, " + inputNum + ", is greater than "
+                                + array[currentIndex] + ", the value at array[" + currentIndex + "]");
+                        lowerBound = currentIndex; //takes the upper half of the selection
+                    }
+                    /* gets the "lower half" of the current selection of the array by bringing the upper bound
+                       down to where the "halway point" was before */
+                    else if (array[currentIndex] > inputNum) {
+                        System.out.println("Your number, " + inputNum + ", is less than "
+                                + array[currentIndex] + ", the value at array[" + currentIndex + "]");
+                        upperBound = currentIndex; //takes the lower half of the selection
+                    }
+                }
+
+            }
+
+
+            if (found) {
+                System.out.println("The number " + inputNum
+                        + " can be found at " + foundNum);
+            } else {
+                System.out.println("Sorry, " + " could not be found.");
+            }
+
+            System.out.println("Would you like to continue?");
+            Scanner replay = new Scanner(System.in);
+            answer = replay.next();
+            System.out.println("");
+
+            if (answer.equals("no")) {
+                looping = false;
+            }
+        } while (looping);
+    }
+
 }
